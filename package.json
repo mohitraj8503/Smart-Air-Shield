@@ -1,0 +1,9 @@
+{
+  "name": "smart-air-shield",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "cd dashboard && npm install && npm run build",
+    "deploy": "cd dashboard && npm install && npm run build && npx wrangler deploy"
+  }
+}
