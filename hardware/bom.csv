@@ -1,0 +1,19 @@
+Category,Item Description,Part Number / Model,Specification,Quantity,Unit Cost (INR),Total Cost (INR),Supplier / Reference Link
+Microcontroller,ESP32 Development Board,ESP32-WROOM-32D,Dual-Core 240MHz 4MB Flash WiFi/BLE,1,450,450,https://robu.in/product/esp32-development-board/
+Sensing,Laser Particulate Sensor (Ambient),Plantower PMS7003,Laser scattering 0.3-10um (UART 9600),1,1650,1650,https://robu.in/product/pms7003-digital-pm2-5-sensor/
+Sensing,Laser Particulate Sensor (Outlet),Plantower PMS7003,Laser scattering 0.3-10um (UART 9600),1,1650,1650,https://robu.in/product/pms7003-digital-pm2-5-sensor/
+Air Processing,Centrifugal Brushless Blower,5015 DC Blower Fan,12V/5V DC 2-8 L/min static pressure blower,1,650,650,https://robu.in/product/5015-12v-radial-cooling-turbo-fan/
+Air Processing,Replaceable Filter Cartridge 3-Stage,H13-CARB-FILT-01,Washable Pre-filter + HEPA H13 (>95%) + Activated Carbon,1,600,600,Custom fabricated / cut-to-fit filter media
+Power,2S Li-ion Battery Pack,18650-2S-2500,7.4V nominal (8.4V max) 2500mAh with internal BMS,1,1200,1200,https://robu.in/product/orange-7-4v-2500mah-2s-li-ion-battery/
+Power,Type-C 2S Li-ion Charger,TP5100 2S Module,USB Type-C 8.4V 1.5A CC/CV charge controller,1,180,180,https://robu.in/product/tp5100-2s-battery-charging-board/
+Power,DC-DC Step-Down Buck Converter,MP1584EN / Mini360,Output 5V 2A 92% efficiency from 7.4V pack,1,120,120,https://robu.in/product/mp1584en-dc-dc-step-down-regulator/
+Driver,MOSFET PWM Driver,AO3400 / IRLZ44N,Logic-level N-Channel MOSFET 30V 5A + Flyback Diode,1,150,150,https://robu.in/product/mosfet-switch-module/
+Display,0.96 inch I2C OLED Display,SSD1306,128x64 Monochrome OLED I2C 3.3V/5V,1,220,220,https://robu.in/product/0-96-inch-i2c-oled-display-module/
+User Interface,Tactile Push Buttons,6x6x5mm Tactile Switch,SPST Momentary through-hole (Mode & Power),2,15,30,Standard component
+User Interface,Buzzer & Status LED,Passive Buzzer + 5mm LED,Piezo buzzer 3.3V + 220 ohm series resistor,1,45,45,Standard component
+Air Delivery,Flexible Silicone / TPU Duct,SIL-DUCT-10MM,Food-grade flexible silicone tube (10mm ID 250mm L),1,250,250,Medical/food-grade silicone hose
+Enclosure,3D Printed External Housing,ABS-ENC-V1,ABS/PETG snap-fit housing (120x72x45 mm),1,650,650,Rapid prototyped via FDM (PETG/ABS)
+Mounting,Universal Helmet Mounting Bracket,POLY-CLIP-01,High-impact polycarbonate rim clamp with soft lining,1,350,350,Removable clamp (non-drilling / non-structural)
+Hardware,Assembly Fasteners & Wiring,FAST-JST-KIT,M2.5/M3 screws JST-XH wiring harnesses heat-shrink,1,200,200,Workshop stock
+Base Platform,BIS-Marked Full-Face Helmet,Vega Crux / Steelbird,BIS IS 4151 certified full-face motorcycle helmet,1,1850,1850,Local safety retailer
+,,,,Total Prototype Cost (INR),10415,

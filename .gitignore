@@ -1,0 +1,21 @@
+# PlatformIO
+.pio/
+.pioenvs/
+.piolibdeps/
+*.elf
+*.bin
+
+# Node / Next.js
+node_modules/
+dist/
+.vite/
+.next/
+out/
+
+# Python / Caches
+__pycache__/
+*.pyc
+
+# OS files
+.DS_Store
+Thumbs.db
