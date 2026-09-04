@@ -60,7 +60,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#F5F5F7] text-[#1D1D1F] w-full px-3 sm:px-6 py-5 space-y-6">
+    <main className="min-h-screen bg-[#F5F5F7] text-[#1D1D1F] max-w-[1280px] mx-auto px-6 sm:px-10 py-8 space-y-6">
       {/* Apple-Style Navigation Header */}
       <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-black/[0.06]">
         <div className="text-left">
