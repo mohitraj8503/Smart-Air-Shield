@@ -61,7 +61,8 @@
 12. [Quickstart & Development Guide](#-12-quickstart--development-guide)
 13. [Experimental Validation & Testing Protocols](#-13-experimental-validation--testing-protocols)
 14. [Safety Charter & Explicit Non-Claims](#-14-safety-charter--explicit-non-claims)
-15. [License](#-15-license)
+15. [Institutional Affiliation & Mentorship](#-15-institutional-affiliation--mentorship)
+16. [License](#-16-license)
 
 ---
 
@@ -79,13 +80,20 @@ Crucially, **paired inlet and outlet laser sensors** empirically verify single-p
 
 ## 👥 2. Multi-Disciplinary Team Structure
 
-In strict adherence to Vishwakarma Awards rules (requiring teams of 2–5 students from recognized STEM/Design institutions with demonstrable multi-disciplinary collaboration), SMART AIR-SHIELD unifies mechanical, electrical, and computer software engineering:
+In strict adherence to Vishwakarma Awards rules (requiring teams of 2–5 students from recognized STEM/Design institutions with designated faculty mentorship and demonstrable multi-disciplinary collaboration), SMART AIR-SHIELD unifies computer science, electronics, mechanical engineering, and environmental analysis from **Arka Jain University (AJU)**:
 
-| Discipline | Role | Core Technical Responsibilities | Concrete Deliverables |
+### 🎓 Supporting Faculty Mentor
+| Mentor Name | Designation & Institution | Mentorship Scope |
+| :--- | :--- | :--- |
+| **Prof. Kamlesh Kumar** | **Faculty Mentor**, Arka Jain University (AJU) | Academic supervision, hardware validation methodology, competition guidance, safety charter review. |
+
+### 🚀 Student Innovation Team
+| Team Member | Discipline & Role | Core Technical Responsibilities | Key Deliverables |
 | :--- | :--- | :--- | :--- |
-| **Mechanical Engineering** | **Student 1** | Aerodynamic ducting, CAD packaging, 3-stage filter bay layout, non-destructive helmet rim clamping bracket, CFD flow balancing, vibration damping. | 3D printable STL/STEP files (`120x72x45mm`), $10\text{ mm}$ silicone duct routing, silicone air knife diffuser, weight target $< 250\text{g}$. |
-| **Electrical & Electronics (ECE/EEE)** | **Student 2** | Power delivery, 7.4V 2S Li-ion battery pack with BMS, DC-DC buck converter, 25 kHz N-MOSFET low-side blower driver with flyback protection, dual UART level-shifting, voltage divider ADC. | Custom PCB layout / protoboard wiring harness, thermal management, acoustic ceiling verification ($< 35\text{ dB(A)}$). |
-| **Computer Science / Embedded (CSE/ECE)** | **Student 3** | Dual-core FreeRTOS firmware, PMS7003 dual-sensor UART drivers with checksum verification, EPA AQI breakpoint interpolation, slew-rate limited control laws, NimBLE GATT server, Next.js Apple Light companion app. | 13/13 passing PlatformIO native tests, ESP32 binary firmware, LittleFS flash logging, Web Bluetooth dashboard. |
+| **Mohit Raj** | **Team Lead**<br/>Computer Science & Embedded Systems | Dual-core ESP32 FreeRTOS firmware architecture, PMS7003 UART drivers with checksum validation, EPA AQI breakpoint interpolation, NimBLE GATT server, Apple-inspired Next.js 14 companion dashboard. | Complete embedded C++ firmware, 13/13 passing native unit tests, Web Bluetooth integration, LittleFS flash circular logging. |
+| **Mohan Pati** | **Hardware & Electronics Lead**<br/>Electrical & Electronics (EEE/ECE) | 7.4V 2S Li-ion battery pack with 8A hardware BMS, DC-DC buck regulation (5V/3.3V), 25 kHz ultrasonic N-MOSFET blower driver with flyback protection, voltage divider ADC circuitry. | Prototype wiring harness, power budget characterization, motor EMF suppression, acoustic noise verification (< 35 dB). |
+| **Rahul (Rox Vipex)** | **Mechanical & CAD Lead**<br/>Mechanical Engineering | 3D CAD modeling, 3-stage modular filter cartridge bay, non-destructive helmet rim clamping bracket, aerodynamic CFD duct routing, rapid prototyping in PETG/ABS. | 3D printable STL/STEP models (120x72x45mm), 10mm silicone duct routing, contoured chin air knife diffuser (< 250g weight). |
+| **Riteeka** | **Research & Testing Analyst**<br/>Environmental & Quality Engineering | Particulate exposure health data analysis, EPA AQI compliance verification, aerosol challenge test protocol design, comparative ON/OFF commuter trial methodologies. | Experimental validation protocols, single-pass filtration efficiency benchmarks (>= 95%), user documentation, competition presentation. |
 
 ---
 
@@ -599,8 +607,19 @@ Open [http://localhost:3000](http://localhost:3000) in **Google Chrome** or **Mi
 
 ---
 
-## 📄 15. License
+## 🏛️ 15. Institutional Affiliation & Mentorship
+
+* **Academic Institution:** **Arka Jain University (AJU)**, Gamharia, Jamshedpur, Jharkhand, India
+* **Faculty Mentor:** **Prof. Kamlesh Kumar** (Department of Engineering, Arka Jain University)
+* **National Challenge:** **Vishwakarma Awards 2026–27** (Organized by **Maker Bhavan Foundation**)
+* **Competition Theme:** **Sustainable Cities / Smart Mobility**
+* **Sub-Theme:** Clean Water, Sanitation & Air Quality Monitoring
+* **Assigned Mentor Track:** **IIT Hyderabad Track**
+
+---
+
+## 📄 16. License
 
 This project is open-source under the [MIT License](LICENSE).
 
-Developed for the **Vishwakarma Awards 2026–27** | Sustainable Cities / Smart Mobility | Mentored via the **IIT Hyderabad Track**.
+Developed by the Student Innovation Team at **Arka Jain University (AJU)** for the **Vishwakarma Awards 2026–27**, mentored via the **IIT Hyderabad Track**.
