@@ -16,6 +16,8 @@ out/
 __pycache__/
 *.pyc
 
-# OS files
+# OS & Scratch files
 .DS_Store
 Thumbs.db
+*.docx
+*.doc
