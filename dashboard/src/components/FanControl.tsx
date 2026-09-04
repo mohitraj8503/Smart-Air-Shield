@@ -23,34 +23,34 @@ export const FanControl: React.FC<FanControlProps> = ({ telemetry }) => {
   };
 
   return (
-    <div className="bg-white rounded-3xl p-6 sm:p-7 border border-black/[0.06] shadow-[0_2px_14px_rgba(0,0,0,0.03)] space-y-5 text-left">
+    <div className="bg-white rounded-3xl p-6 sm:p-8 border border-black/[0.06] shadow-[0_2px_16px_rgba(0,0,0,0.03)] space-y-6 text-left">
       <div className="flex items-center justify-between">
         <div>
-          <div className="text-xs font-medium text-[#6E6E73]">
+          <div className="text-sm font-medium text-[#6E6E73]">
             Blower regulation
           </div>
-          <h3 className="text-lg font-semibold text-[#1D1D1F] tracking-tight mt-0.5">
+          <h3 className="text-xl font-bold text-[#1D1D1F] tracking-tight mt-0.5">
             Centrifugal fan
           </h3>
         </div>
 
-        <div className="flex items-center space-x-2">
-          <span className="text-2xl font-bold tracking-tight text-[#1D1D1F]">
-            {mode === 0 ? '0' : currentDuty}<span className="text-sm font-normal text-[#6E6E73] ml-0.5">%</span>
+        <div className="flex items-center space-x-2.5">
+          <span className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[#1D1D1F]">
+            {mode === 0 ? '0' : currentDuty}<span className="text-base font-medium text-[#6E6E73] ml-0.5">%</span>
           </span>
-          <div className="w-8 h-8 rounded-full bg-[#F5F5F7] flex items-center justify-center text-[#1D1D1F]">
-            <Fan className={`w-4 h-4 text-[#1D1D1F] ${mode !== 0 ? 'animate-spin' : ''}`} style={{ animationDuration: `${Math.max(0.6, 2.5 - (currentDuty / 100) * 1.8)}s` }} />
+          <div className="w-10 h-10 rounded-full bg-[#F5F5F7] flex items-center justify-center text-[#1D1D1F]">
+            <Fan className={`w-5 h-5 text-[#1D1D1F] ${mode !== 0 ? 'animate-spin' : ''}`} style={{ animationDuration: `${Math.max(0.6, 2.5 - (currentDuty / 100) * 1.8)}s` }} />
           </div>
         </div>
       </div>
 
-      {/* iOS Segmented Control */}
-      <div className="bg-[#E5E5EA] p-1 rounded-2xl flex relative">
+      {/* iOS Segmented Control (Larger & More Confident) */}
+      <div className="bg-[#E5E5EA] p-1.5 rounded-2xl flex relative">
         <button
           onClick={() => handleModeChange(1)}
-          className={`flex-1 py-1.5 px-3 text-xs font-semibold rounded-xl transition-all duration-200 ${
+          className={`flex-1 py-2 px-4 text-sm font-semibold rounded-xl transition-all duration-200 ${
             mode === 1
-              ? 'bg-white text-[#1D1D1F] shadow-[0_1px_3px_rgba(0,0,0,0.12),0_1px_2px_rgba(0,0,0,0.08)]'
+              ? 'bg-white text-[#1D1D1F] shadow-[0_1px_4px_rgba(0,0,0,0.12),0_1px_2px_rgba(0,0,0,0.08)]'
               : 'text-[#6E6E73] hover:text-[#1D1D1F]'
           }`}
         >
@@ -59,9 +59,9 @@ export const FanControl: React.FC<FanControlProps> = ({ telemetry }) => {
 
         <button
           onClick={() => handleModeChange(2)}
-          className={`flex-1 py-1.5 px-3 text-xs font-semibold rounded-xl transition-all duration-200 ${
+          className={`flex-1 py-2 px-4 text-sm font-semibold rounded-xl transition-all duration-200 ${
             mode === 2
-              ? 'bg-white text-[#1D1D1F] shadow-[0_1px_3px_rgba(0,0,0,0.12),0_1px_2px_rgba(0,0,0,0.08)]'
+              ? 'bg-white text-[#1D1D1F] shadow-[0_1px_4px_rgba(0,0,0,0.12),0_1px_2px_rgba(0,0,0,0.08)]'
               : 'text-[#6E6E73] hover:text-[#1D1D1F]'
           }`}
         >
@@ -70,9 +70,9 @@ export const FanControl: React.FC<FanControlProps> = ({ telemetry }) => {
 
         <button
           onClick={() => handleModeChange(0)}
-          className={`flex-1 py-1.5 px-3 text-xs font-semibold rounded-xl transition-all duration-200 ${
+          className={`flex-1 py-2 px-4 text-sm font-semibold rounded-xl transition-all duration-200 ${
             mode === 0
-              ? 'bg-white text-[#1D1D1F] shadow-[0_1px_3px_rgba(0,0,0,0.12),0_1px_2px_rgba(0,0,0,0.08)]'
+              ? 'bg-white text-[#1D1D1F] shadow-[0_1px_4px_rgba(0,0,0,0.12),0_1px_2px_rgba(0,0,0,0.08)]'
               : 'text-[#6E6E73] hover:text-[#1D1D1F]'
           }`}
         >
@@ -81,10 +81,10 @@ export const FanControl: React.FC<FanControlProps> = ({ telemetry }) => {
       </div>
 
       {/* Speed Slider */}
-      <div className="space-y-2 pt-1">
-        <div className="flex items-center justify-between text-xs text-[#6E6E73]">
+      <div className="space-y-3 pt-1">
+        <div className="flex items-center justify-between text-sm text-[#6E6E73]">
           <span>Airflow velocity</span>
-          <span>{mode === 1 ? 'Adaptive (2–8 L/min)' : mode === 0 ? 'Standby' : `${currentDuty}% speed`}</span>
+          <span className="font-semibold text-[#1D1D1F]">{mode === 1 ? 'Adaptive (2–8 L/min)' : mode === 0 ? 'Standby' : `${currentDuty}% speed`}</span>
         </div>
 
         <input
@@ -95,10 +95,10 @@ export const FanControl: React.FC<FanControlProps> = ({ telemetry }) => {
           value={currentDuty || 20}
           onChange={handleDutyChange}
           disabled={mode === 0}
-          className="w-full h-1.5 bg-[#E5E5EA] rounded-full appearance-none cursor-pointer accent-[#0A84FF] disabled:opacity-30 transition-all"
+          className="w-full h-2 bg-[#E5E5EA] rounded-full appearance-none cursor-pointer accent-[#0A84FF] disabled:opacity-30 transition-all"
         />
 
-        <div className="flex justify-between text-[11px] text-[#6E6E73]/70 font-medium px-0.5">
+        <div className="flex justify-between text-xs text-[#6E6E73]/70 font-medium px-1">
           <span>Min (20%)</span>
           <span>Acoustic ceiling (&le;80%)</span>
           <span>Max (100%)</span>
