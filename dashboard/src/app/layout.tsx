@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "SMART AIR-SHIELD — Helmet Air Purification Dashboard",
-  description: "Live telemetry dashboard for SMART AIR-SHIELD helmet module (Vishwakarma Awards 2026-27)",
+  title: "SMART AIR-SHIELD — Clean Breathing Companion",
+  description: "Apple-inspired live telemetry dashboard for SMART AIR-SHIELD helmet air purification module",
 };
 
 export default function RootLayout({
@@ -12,8 +12,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
-      <body className="bg-slate-950 text-slate-100 min-h-screen">
+    <html lang="en">
+      <body className="bg-[#F5F5F7] text-[#1D1D1F] min-h-screen antialiased selection:bg-[#0A84FF]/20 selection:text-[#0A84FF]">
         {children}
       </body>
     </html>

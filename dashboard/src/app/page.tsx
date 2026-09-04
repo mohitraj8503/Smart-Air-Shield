@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Bluetooth, BluetoothConnected, BluetoothOff, Play, Shield, Info, AlertCircle } from 'lucide-react';
+import { Bluetooth, Play, Info } from 'lucide-react';
 import { bleManager } from '../ble/bleManager';
 import { TelemetryData, ConnectionState, HistoryPoint } from '../types';
 import { LiveAQI } from '../components/LiveAQI';
@@ -12,7 +12,7 @@ import { SessionHistory } from '../components/SessionHistory';
 export default function DashboardPage() {
   const [telemetry, setTelemetry] = useState<TelemetryData | null>(null);
   const [connectionState, setConnectionState] = useState<ConnectionState>('disconnected');
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [history, setHistory] = useState<HistoryPoint[]>([]);
 
   useEffect(() => {
@@ -20,10 +20,9 @@ export default function DashboardPage() {
       (data: TelemetryData) => {
         setTelemetry(data);
 
-        // Append to history point
         const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
         setHistory((prev) => [
-          ...prev.slice(-60), // Keep last 60 points in memory
+          ...prev.slice(-60),
           {
             time: timeStr,
             pm25_amb: data.pm25_ambient,
@@ -32,12 +31,12 @@ export default function DashboardPage() {
           },
         ]);
       },
-      (state: ConnectionState, err?: string) => {
+      (state: ConnectionState, msg?: string) => {
         setConnectionState(state);
-        if (err) {
-          setErrorMessage(err);
+        if (msg) {
+          setStatusMessage(msg);
         } else {
-          setErrorMessage(null);
+          setStatusMessage(null);
         }
       }
     );
@@ -48,7 +47,7 @@ export default function DashboardPage() {
   }, []);
 
   const handleConnect = async () => {
-    setErrorMessage(null);
+    setStatusMessage(null);
     await bleManager.connect();
   };
 
@@ -61,121 +60,102 @@ export default function DashboardPage() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100 p-4 md:p-8 max-w-5xl mx-auto space-y-6">
-      {/* Top Navbar Header */}
-      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-800/80">
-        <div>
-          <div className="flex items-center space-x-2.5">
-            <div className="p-2.5 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 shadow-inner">
-              <Shield className="w-6 h-6" />
-            </div>
-            <div>
-              <h1 className="text-xl md:text-2xl font-black tracking-tight text-white flex items-center gap-2">
-                SMART AIR-SHIELD
-                <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400">
-                  Vishwakarma 2026–27
-                </span>
-              </h1>
-              <p className="text-xs text-slate-400 font-medium">
-                Removable Air-Purification & Monitoring Module for Two-Wheeler Helmets
-              </p>
-            </div>
+    <main className="min-h-screen bg-[#F5F5F7] text-[#1D1D1F] p-4 sm:p-6 md:p-10 max-w-4xl mx-auto space-y-6">
+      {/* Apple-style Clean Navigation Bar */}
+      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-black/[0.06]">
+        <div className="text-left">
+          <div className="flex items-center space-x-2">
+            <h1 className="text-xl font-bold tracking-tight text-[#1D1D1F]">
+              SMART AIR-SHIELD
+            </h1>
+            <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-black/[0.04] text-[#6E6E73]">
+              Vishwakarma 26–27
+            </span>
           </div>
+          <p className="text-xs text-[#6E6E73] mt-0.5">
+            Removable air-purification & monitoring module for two-wheeler helmets
+          </p>
         </div>
 
-        {/* Connection Control Buttons */}
-        <div className="flex items-center space-x-2">
+        {/* Pairing & Action Buttons */}
+        <div className="flex items-center space-x-2.5">
           {connectionState === 'disconnected' && (
             <>
               <button
                 onClick={handleConnect}
-                className="py-2 px-4 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs rounded-xl shadow-lg shadow-cyan-500/20 transition-all flex items-center space-x-2"
+                className="py-2 px-4 bg-[#0A84FF] hover:bg-[#0071E3] text-white font-medium text-xs rounded-full shadow-sm transition-all flex items-center space-x-1.5 active:scale-95"
               >
-                <Bluetooth className="w-4 h-4" />
-                <span>Pair Helmet</span>
+                <Bluetooth className="w-3.5 h-3.5" />
+                <span>Pair helmet</span>
               </button>
               <button
                 onClick={handleStartMock}
-                className="py-2 px-3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs rounded-xl border border-slate-700 transition-all flex items-center space-x-1.5"
-                title="Simulate live helmet telemetry without hardware"
+                className="py-2 px-3.5 bg-white hover:bg-[#E5E5EA]/40 text-[#1D1D1F] font-medium text-xs rounded-full border border-black/[0.08] shadow-sm transition-all flex items-center space-x-1.5 active:scale-95"
+                title="Preview live helmet telemetry without hardware"
               >
-                <Play className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Demo Mode</span>
+                <Play className="w-3 h-3 text-[#34C759]" />
+                <span>Demo mode</span>
               </button>
             </>
           )}
 
           {connectionState === 'connecting' && (
-            <button
-              disabled
-              className="py-2 px-4 bg-slate-800 text-slate-400 font-semibold text-xs rounded-xl border border-slate-700 flex items-center space-x-2 cursor-wait"
-            >
-              <Bluetooth className="w-4 h-4 animate-pulse text-cyan-400" />
-              <span>Scanning...</span>
-            </button>
+            <div className="py-2 px-4 bg-white text-[#6E6E73] font-medium text-xs rounded-full border border-black/[0.08] shadow-sm flex items-center space-x-2">
+              <span className="w-2 h-2 rounded-full bg-[#0A84FF] animate-ping" />
+              <span>Connecting...</span>
+            </div>
           )}
 
           {connectionState === 'connected' && (
             <button
               onClick={handleDisconnect}
-              className="py-2 px-4 bg-emerald-500/10 hover:bg-rose-500/10 border border-emerald-500/30 hover:border-rose-500/30 text-emerald-400 hover:text-rose-400 font-bold text-xs rounded-xl transition-all flex items-center space-x-2"
+              className="py-2 px-4 bg-white hover:bg-black/[0.03] text-[#34C759] font-medium text-xs rounded-full border border-black/[0.08] shadow-sm transition-all flex items-center space-x-2"
             >
-              <BluetoothConnected className="w-4 h-4" />
-              <span>Connected (Disconnect)</span>
+              <span className="w-2 h-2 rounded-full bg-[#34C759]" />
+              <span>Connected &bull; Disconnect</span>
             </button>
           )}
 
           {connectionState === 'mock' && (
             <button
               onClick={handleDisconnect}
-              className="py-2 px-4 bg-purple-500/10 hover:bg-rose-500/10 border border-purple-500/30 hover:border-rose-500/30 text-purple-400 hover:text-rose-400 font-bold text-xs rounded-xl transition-all flex items-center space-x-2"
+              className="py-2 px-4 bg-white hover:bg-black/[0.03] text-[#0A84FF] font-medium text-xs rounded-full border border-black/[0.08] shadow-sm transition-all flex items-center space-x-2"
             >
-              <Play className="w-4 h-4" />
-              <span>Demo Mode Active (Exit)</span>
+              <span className="w-2 h-2 rounded-full bg-[#0A84FF]" />
+              <span>Demo active &bull; Exit</span>
             </button>
           )}
         </div>
       </header>
 
-      {/* Error / Browser Notice Banner */}
-      {errorMessage && (
-        <div className="bg-rose-500/10 border border-rose-500/30 rounded-2xl p-4 flex items-start space-x-3 text-rose-300 text-xs">
-          <AlertCircle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
-          <div>
-            <div className="font-bold">Bluetooth Notice:</div>
-            <div>{errorMessage}</div>
-          </div>
+      {/* Calm Status Notice */}
+      {statusMessage && (
+        <div className="bg-white rounded-2xl p-4 border border-black/[0.06] shadow-sm flex items-start space-x-3 text-[#6E6E73] text-xs text-left">
+          <Info className="w-4 h-4 text-[#0A84FF] shrink-0 mt-0.5" />
+          <div>{statusMessage}</div>
         </div>
       )}
 
-      {/* Browser Compatibility Info Tip */}
-      <div className="bg-slate-900/50 border border-slate-800/80 rounded-2xl p-3.5 flex items-center space-x-3 text-xs text-slate-400">
-        <Info className="w-4 h-4 text-cyan-400 shrink-0" />
-        <div>
-          <span className="font-semibold text-slate-300">Web Bluetooth Compatibility:</span> Runs natively on Chrome & Edge (Desktop & Android). iOS Safari does not support Web Bluetooth — use Demo Mode or Bluefy on iOS.
-        </div>
-      </div>
-
-      {/* Main Grid Components */}
+      {/* Main Apple-Inspired Dashboard Layout */}
       <div className="space-y-6">
-        {/* Live AQI & Dual Sensor Cards */}
+        {/* 1. The Hero: Breathing Zone Particulate Reduction */}
         <LiveAQI telemetry={telemetry} />
 
-        {/* Blower & Battery Grid */}
+        {/* 2. Quiet, Disciplined Controls & Battery Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FanControl telemetry={telemetry} />
           <BatteryIndicator telemetry={telemetry} />
         </div>
 
-        {/* Live Exposure Trend History & CSV Export */}
+        {/* 3. Commute Exposure Trend History */}
         <SessionHistory history={history} />
       </div>
 
-      {/* Project Footer */}
-      <footer className="pt-8 pb-4 text-center text-xs text-slate-500 border-t border-slate-800/60 space-y-2">
-        <p>SMART AIR-SHIELD &bull; Submitted for Vishwakarma Awards 2026–27 (IIT Hyderabad Track)</p>
-        <p className="text-[11px] text-slate-600">
-          Sustainable Cities &bull; Clean Water, Sanitation & Air Quality Monitoring &bull; Non-structural helmet attachment
+      {/* Quiet Footer */}
+      <footer className="pt-6 pb-2 text-center text-xs text-[#6E6E73] space-y-1">
+        <p>SMART AIR-SHIELD &bull; Vishwakarma Awards 2026–27 &bull; IIT Hyderabad Track</p>
+        <p className="text-[11px] text-[#6E6E73]/70">
+          Sustainable Cities &bull; Clean Water, Sanitation & Air Quality Monitoring &bull; Non-structural accessory
         </p>
       </footer>
     </main>

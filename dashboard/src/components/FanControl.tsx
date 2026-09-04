@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Fan, Sliders, Power, Sparkles } from 'lucide-react';
+import { Fan } from 'lucide-react';
 import { TelemetryData } from '../types';
 import { bleManager } from '../ble/bleManager';
 
@@ -22,85 +22,69 @@ export const FanControl: React.FC<FanControlProps> = ({ telemetry }) => {
     bleManager.setDuty(val);
   };
 
-  const handlePreset = (val: number) => {
-    bleManager.setDuty(val);
-  };
-
-  const handlePower = () => {
-    bleManager.togglePower();
-  };
-
   return (
-    <div className="bg-slate-900/80 border border-slate-800/90 rounded-2xl p-5 shadow-lg space-y-4">
+    <div className="bg-white rounded-3xl p-6 sm:p-7 border border-black/[0.06] shadow-[0_2px_14px_rgba(0,0,0,0.03)] space-y-5 text-left">
       <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <div className="p-2 rounded-xl bg-cyan-500/10 text-cyan-400">
-            <Fan className={`w-5 h-5 ${mode !== 0 ? 'animate-spin' : ''}`} style={{ animationDuration: `${Math.max(0.4, 2.5 - (currentDuty / 100) * 2)}s` }} />
+        <div>
+          <div className="text-xs font-medium text-[#6E6E73]">
+            Blower regulation
           </div>
-          <div>
-            <h3 className="font-bold text-white text-sm">Centrifugal Blower Control</h3>
-            <p className="text-xs text-slate-400">Adaptive PWM breathing-zone ventilation</p>
-          </div>
+          <h3 className="text-lg font-semibold text-[#1D1D1F] tracking-tight mt-0.5">
+            Centrifugal fan
+          </h3>
         </div>
 
-        {/* Power Button */}
-        <button
-          onClick={handlePower}
-          className={`p-2.5 rounded-xl border transition-all ${
-            mode !== 0
-              ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20'
-              : 'bg-slate-800 border-slate-700 text-slate-400 hover:text-white'
-          }`}
-          title={mode !== 0 ? 'Power Off' : 'Power On'}
-        >
-          <Power className="w-4 h-4" />
-        </button>
+        <div className="flex items-center space-x-2">
+          <span className="text-2xl font-bold tracking-tight text-[#1D1D1F]">
+            {mode === 0 ? '0' : currentDuty}<span className="text-sm font-normal text-[#6E6E73] ml-0.5">%</span>
+          </span>
+          <div className="w-8 h-8 rounded-full bg-[#F5F5F7] flex items-center justify-center text-[#1D1D1F]">
+            <Fan className={`w-4 h-4 text-[#1D1D1F] ${mode !== 0 ? 'animate-spin' : ''}`} style={{ animationDuration: `${Math.max(0.6, 2.5 - (currentDuty / 100) * 1.8)}s` }} />
+          </div>
+        </div>
       </div>
 
-      {/* Mode Switcher Tabs */}
-      <div className="grid grid-cols-3 gap-2 bg-slate-950 p-1 rounded-xl border border-slate-800">
+      {/* iOS Segmented Control */}
+      <div className="bg-[#E5E5EA] p-1 rounded-2xl flex relative">
         <button
           onClick={() => handleModeChange(1)}
-          className={`py-2 px-3 text-xs font-bold rounded-lg transition-all flex items-center justify-center space-x-1.5 ${
+          className={`flex-1 py-1.5 px-3 text-xs font-semibold rounded-xl transition-all duration-200 ${
             mode === 1
-              ? 'bg-cyan-500 text-slate-950 shadow-md'
-              : 'text-slate-400 hover:text-white'
+              ? 'bg-white text-[#1D1D1F] shadow-[0_1px_3px_rgba(0,0,0,0.12),0_1px_2px_rgba(0,0,0,0.08)]'
+              : 'text-[#6E6E73] hover:text-[#1D1D1F]'
           }`}
         >
-          <Sparkles className="w-3.5 h-3.5" />
-          <span>Auto Adaptive</span>
+          Auto adaptive
         </button>
 
         <button
           onClick={() => handleModeChange(2)}
-          className={`py-2 px-3 text-xs font-bold rounded-lg transition-all flex items-center justify-center space-x-1.5 ${
+          className={`flex-1 py-1.5 px-3 text-xs font-semibold rounded-xl transition-all duration-200 ${
             mode === 2
-              ? 'bg-cyan-500 text-slate-950 shadow-md'
-              : 'text-slate-400 hover:text-white'
+              ? 'bg-white text-[#1D1D1F] shadow-[0_1px_3px_rgba(0,0,0,0.12),0_1px_2px_rgba(0,0,0,0.08)]'
+              : 'text-[#6E6E73] hover:text-[#1D1D1F]'
           }`}
         >
-          <Sliders className="w-3.5 h-3.5" />
-          <span>Manual</span>
+          Manual
         </button>
 
         <button
           onClick={() => handleModeChange(0)}
-          className={`py-2 px-3 text-xs font-bold rounded-lg transition-all flex items-center justify-center space-x-1.5 ${
+          className={`flex-1 py-1.5 px-3 text-xs font-semibold rounded-xl transition-all duration-200 ${
             mode === 0
-              ? 'bg-rose-500 text-white shadow-md'
-              : 'text-slate-400 hover:text-white'
+              ? 'bg-white text-[#1D1D1F] shadow-[0_1px_3px_rgba(0,0,0,0.12),0_1px_2px_rgba(0,0,0,0.08)]'
+              : 'text-[#6E6E73] hover:text-[#1D1D1F]'
           }`}
         >
-          <Power className="w-3.5 h-3.5" />
-          <span>Off</span>
+          Off
         </button>
       </div>
 
-      {/* Speed Readout & Slider */}
-      <div className="space-y-3 pt-1">
-        <div className="flex items-center justify-between text-xs">
-          <span className="text-slate-400">PWM Output Level</span>
-          <span className="font-mono font-bold text-cyan-400 text-sm">{currentDuty}%</span>
+      {/* Speed Slider */}
+      <div className="space-y-2 pt-1">
+        <div className="flex items-center justify-between text-xs text-[#6E6E73]">
+          <span>Airflow velocity</span>
+          <span>{mode === 1 ? 'Adaptive (2–8 L/min)' : mode === 0 ? 'Standby' : `${currentDuty}% speed`}</span>
         </div>
 
         <input
@@ -111,29 +95,13 @@ export const FanControl: React.FC<FanControlProps> = ({ telemetry }) => {
           value={currentDuty || 20}
           onChange={handleDutyChange}
           disabled={mode === 0}
-          className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400 disabled:opacity-40"
+          className="w-full h-1.5 bg-[#E5E5EA] rounded-full appearance-none cursor-pointer accent-[#0A84FF] disabled:opacity-30 transition-all"
         />
 
-        {/* Preset Buttons */}
-        <div className="flex items-center justify-between gap-2 pt-1">
-          {[
-            { label: 'Low (30%)', val: 30 },
-            { label: 'Med (60%)', val: 60 },
-            { label: 'High (90%)', val: 90 },
-          ].map((preset) => (
-            <button
-              key={preset.val}
-              onClick={() => handlePreset(preset.val)}
-              disabled={mode === 0}
-              className={`flex-1 py-1.5 px-2 text-xs font-medium rounded-lg border transition-all ${
-                currentDuty === preset.val && mode === 2
-                  ? 'bg-cyan-500/20 border-cyan-400 text-cyan-300'
-                  : 'bg-slate-950/50 border-slate-800 text-slate-400 hover:bg-slate-800 disabled:opacity-40'
-              }`}
-            >
-              {preset.label}
-            </button>
-          ))}
+        <div className="flex justify-between text-[11px] text-[#6E6E73]/70 font-medium px-0.5">
+          <span>Min (20%)</span>
+          <span>Acoustic ceiling (&le;80%)</span>
+          <span>Max (100%)</span>
         </div>
       </div>
     </div>
