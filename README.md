@@ -1,5 +1,3 @@
-# SMART AIR-SHIELD
-
 <div align="center">
 
 # 🛡️ SMART AIR-SHIELD
@@ -43,10 +41,12 @@
    - [4.6 Commercial Viability, Unit Economics & Scaling](#46-commercial-viability-unit-economics--scaling)
    - [4.7 Fact Check & Prior Art Benchmark](#47-fact-check--prior-art-benchmark)
    - [4.8 Human Factors, Ergonomics & Ease of Use](#48-human-factors-ergonomics--ease-of-use)
-5. [System Architecture](#-5-system-architecture)
-   - [High-Level Interconnect Flow](#51-high-level-interconnect-flow)
-   - [FreeRTOS Multitasking Firmware Architecture](#52-freertos-multitasking-firmware-architecture)
-6. [Helmet Physical Fitting & Ergonomic Arrangement](#-6-helmet-physical-fitting--ergonomic-arrangement)
+5. [System Architecture & Engineering Flowcharts](#-5-system-architecture--engineering-flowcharts)
+   - [5.1 End-to-End System Interconnect Architecture](#51-end-to-end-system-interconnect-architecture)
+   - [5.2 FreeRTOS Firmware Control Logic Flowchart](#52-freertos-firmware-control-logic-flowchart)
+6. [Helmet Physical Fitting & Airflow Circulation](#-6-helmet-physical-fitting--airflow-circulation)
+   - [6.1 Placement & Engineering Justification Table](#61-placement--engineering-justification-table)
+   - [6.2 Aerodynamic Airflow Path & Filtration Flowchart](#62-aerodynamic-airflow-path--filtration-flowchart)
 7. [Hardware Specifications & Pinout](#-7-hardware-specifications--pinout)
    - [ESP32 Pin Assignment Table](#71-esp32-pin-assignment-table)
    - [Low-Side Blower MOSFET Schematic](#72-low-side-blower-mosfet-schematic)
@@ -160,90 +160,120 @@ The Vishwakarma Awards evaluate entries across **8 core criteria**. Here is how 
 
 ---
 
-## 🏗️ 5. System Architecture
+## 🏗️ 5. System Architecture & Engineering Flowcharts
 
-### 5.1 High-Level Interconnect Flow
+### 5.1 End-to-End System Interconnect Architecture
 
 ```mermaid
-graph TD
-    subgraph PowerSystem ["⚡ Power Subsystem (7.4V 2S Li-ion 2500mAh)"]
-        BAT["7.4V 2S Li-ion Pack"] --> BMS["2S 8A Hardware BMS"]
-        BMS --> BUCK["5V 2A High-Efficiency Buck Regulator"]
-        BMS --> DIVIDER["Precision Voltage Divider (100kΩ / 47kΩ)"]
-        BMS --> BLOWER_VCC["Blower Motor Power Rail (+7.4V)"]
+flowchart TD
+    subgraph Power_Subsystem["Power Subsystem"]
+        BAT["7.4V 2S Li-ion Battery 2500mAh"] --> BMS["2S 8A Hardware BMS Module"]
+        BMS --> BUCK["5V 2A DC-DC Step-Down Regulator"]
+        BMS --> DIVIDER["Precision Resistor Divider: 100k / 47k"]
+        BMS --> MOTOR_PWR["Blower Power Terminal: +7.4V Rail"]
     end
 
-    subgraph Controller ["🧠 ESP32-WROOM-32 (FreeRTOS Dual-Core)"]
-        VIN_RAIL["5V / 3.3V Power Distribution"]
-        UART1["UART1: GPIO 16 (RX) / 17 (TX)"]
-        UART2["UART2: GPIO 25 (RX) / 26 (TX)"]
-        I2C["I2C: GPIO 21 (SDA) / 22 (SCL)"]
-        PWM_OUT["PWM: GPIO 27 (25 kHz, 10-bit)"]
-        ADC_CH["ADC1_CH6: GPIO 34 (Analog)"]
-        BTNS["Tactile Inputs: GPIO 32 (Mode) / 33 (Power)"]
-        ALERTS["GPIO 2 (Status LED) / 15 (Piezo Buzzer)"]
-        WIRELESS["NimBLE GATT Server & WiFi SoftAP"]
+    subgraph Sensing_Bay["Dual-Sensor Sensing & Filtration Bay"]
+        ROAD_AIR["Roadside Ambient Air Inlet"] --> SENS_AMB["Inlet PMS7003 Laser Sensor"]
+        ROAD_AIR --> FILT_PRE["Stage 1: Washable 40-Mesh Pre-Filter"]
+        FILT_PRE --> FILT_HEPA["Stage 2: True HEPA H13 Media Filter"]
+        FILT_HEPA --> FILT_CARB["Stage 3: Activated Carbon Honeycomb"]
+        FILT_CARB --> BLOWER_FAN["5015 Brushless Centrifugal Blower"]
+        BLOWER_FAN --> AIR_DUCT["10mm Flexible Silicone Air Duct"]
+        AIR_DUCT --> SENS_OUT["Outlet PMS7003 Laser Sensor"]
+        AIR_DUCT --> AIR_DIFFUSER["Breathing Zone Delivery Air Knife"]
     end
 
-    subgraph SensingSubsystem ["🔍 Sensing & Filtration Bay"]
-        AMB_INLET["Roadside Ambient Air Inlet"] --> PMS_AMB["Inlet PMS7003 PM Sensor"]
-        AMB_INLET --> FILTER_BAY["3-Stage Filter: Pre-Filter + HEPA H13 + Carbon"]
-        FILTER_BAY --> BLOWER_FAN["5015 Centrifugal Blower"]
-        BLOWER_FAN --> OUTLET_DUCT["10mm Flexible Silicone Duct"]
-        OUTLET_DUCT --> PMS_OUT["Outlet PMS7003 PM Sensor"]
-        OUTLET_DUCT --> DIFFUSER["Breathing Zone Delivery Air Knife"]
+    subgraph ESP32_Processing["ESP32 Dual-Core Controller (FreeRTOS)"]
+        CORE_PWR["Power Rail: 5V VIN / 3.3V VDD"]
+        UART1_IN["UART1 Interface: GPIO 16 RX / 17 TX"]
+        UART2_IN["UART2 Interface: GPIO 25 RX / 26 TX"]
+        ADC_PIN["ADC1 Channel 6: GPIO 34 Analog"]
+        I2C_BUS["I2C Fast Bus: GPIO 21 SDA / 22 SCL"]
+        PWM_PIN["PWM Timer: GPIO 27 at 25kHz 10-bit"]
+        GPIO_IN["Tactile Inputs: GPIO 32 Mode / 33 Power"]
+        GPIO_OUT["Alerts: GPIO 2 LED / GPIO 15 Buzzer"]
+        WIRELESS_CORE["Wireless Radio: NimBLE & WiFi SoftAP"]
     end
 
-    subgraph Actuators ["⚙️ Actuation & Local Interface"]
-        MOSFET["N-MOSFET Driver (AO3400 / IRLZ44N)"]
-        OLED["0.96 inch SSD1306 OLED (128x64)"]
-        STATUS_LED["Superbright Green/Blue LED"]
-        PIEZO["Piezo Alert Buzzer"]
+    subgraph Actuators_Interface["Actuators & Local Indicators"]
+        MOSFET_DRV["N-MOSFET Driver: AO3400 / IRLZ44N with 1N5819"]
+        OLED_DISP["0.96 inch SSD1306 OLED 128x64"]
+        STATUS_LIGHT["Superbright Status LED"]
+        AUDIO_BUZZ["Piezo Audible Buzzer"]
     end
 
-    subgraph CompanionDashboard ["📱 Apple-Style Companion Dashboard"]
-        PWA["Next.js 14 Companion Web Application"]
+    subgraph Mobile_Companion["Apple-Inspired Companion Dashboard"]
+        BLE_CLIENT["Next.js 14 Companion Web Application"]
+        DATA_LOG["CSV Ride Telemetry Export"]
     end
 
-    BUCK --> VIN_RAIL
-    DIVIDER --> ADC_CH
+    BUCK --> CORE_PWR
+    DIVIDER --> ADC_PIN
 
-    PMS_AMB <--> UART1
-    PMS_OUT <--> UART2
+    SENS_AMB --> UART1_IN
+    SENS_OUT --> UART2_IN
 
-    PWM_OUT --> MOSFET
-    MOSFET --> BLOWER_FAN
+    PWM_PIN --> MOSFET_DRV
+    MOSFET_DRV --> BLOWER_FAN
 
-    I2C --> OLED
-    ALERTS --> STATUS_LED
-    ALERTS --> PIEZO
+    I2C_BUS --> OLED_DISP
+    GPIO_OUT --> STATUS_LIGHT
+    GPIO_OUT --> AUDIO_BUZZ
 
-    WIRELESS -.-> |Web Bluetooth GATT (1 Hz)| PWA
-    WIRELESS -.-> |WiFi SoftAP /log.csv| PWA
+    WIRELESS_CORE -->|"Web Bluetooth GATT 1Hz Stream"| BLE_CLIENT
+    WIRELESS_CORE -->|"WiFi SoftAP CSV Download"| DATA_LOG
 ```
 
 ---
 
-### 5.2 FreeRTOS Multitasking Firmware Architecture
+### 5.2 FreeRTOS Firmware Control Logic Flowchart
 
-The ESP32 firmware separates sensing, closed-loop regulation, user feedback, and telemetry into 4 independent FreeRTOS tasks to guarantee deterministic execution:
+The firmware executes on dual Xtensa cores, separating high-speed sensor parsing from EPA control decisions and Bluetooth telemetry:
 
-| Task Name | Core | Priority | Frequency | Execution Details |
-| :--- | :---: | :---: | :---: | :--- |
-| `vSensorTask` | Core 1 | 3 (High) | 20 Hz (50 ms) | Streams UART1 & UART2 serial data; parses 32-byte frames; verifies start bytes (`0x42 0x4D`) and checksums; samples battery ADC every 5s; manages 30s sensor laser warm-up; detects $>5\text{s}$ sensor communication dropouts. |
-| `vControlTask` | Core 1 | 3 (High) | 5 Hz (200 ms) | Interpolates EPA AQI using US EPA breakpoint equations; computes target blower duty based on operating mode (Auto vs Manual); enforces $\pm 5\%$ duty cycle slew-rate limiting; drives 25 kHz 10-bit PWM output. |
-| `vUITask` | Core 0 | 2 (Med) | 50 Hz (20 ms) | Debounces tactile Mode and Power buttons (50 ms window, long-press detection); updates 0.96" SSD1306 OLED at 2 Hz via U8g2; manages status LED pulses and audible buzzer alerts. |
-| `vTelemetryTask` | Core 0 | 1 (Low) | 1 Hz (1000 ms) | Packages 17-byte binary telemetry packet; notifies connected Bluetooth Low Energy client; logs data point to LittleFS flash session CSV; processes local WiFi HTTP requests. |
+```mermaid
+flowchart TD
+    START(["System Power ON"]) --> BOOT["Hardware Initialization: GPIO, I2C, UART1, UART2, PWM 25kHz, LittleFS, NimBLE"]
+    BOOT --> WARMUP["Sensor Laser Chamber Warm-Up (30s Timer)"]
+    WARMUP --> SENSOR_LOOP["vSensorTask: Read 32-Byte UART Frames from Dual PMS7003 Sensors"]
+    
+    SENSOR_LOOP --> CHK_VALID{"Valid 0x42 0x4D Start & Checksum OK?"}
+    CHK_VALID -- "Yes" --> UPDATE_READINGS["Update Ambient PM2.5/PM10 and Delivered PM2.5/PM10"]
+    CHK_VALID -- "No or Timeout > 5s" --> FAILSAFE["Trigger Sensor Fault Flag: Set Safe Nominal Duty = 50%"]
+    
+    UPDATE_READINGS --> CALC_AQI["vControlTask: Compute US EPA AQI via Piecewise Breakpoint Equations"]
+    CALC_AQI --> CALC_EFF["Compute Real-Time Filtration Efficiency: 1 - PM_out / PM_amb * 100%"]
+    
+    CALC_EFF --> MODE_CHECK{"Operating Mode?"}
+    MODE_CHECK -- "Auto Adaptive" --> TARGET_AUTO["Determine Target Duty from EPA AQI Bucket: 20% to 80%"]
+    MODE_CHECK -- "Manual" --> TARGET_MANUAL["Use Rider-Selected Duty Cycle: 20% to 100%"]
+    MODE_CHECK -- "Standby / OFF" --> TARGET_OFF["Target Duty = 0%"]
+    
+    FAILSAFE --> SLEW_LIMIT["Enforce Slew-Rate Limiter: Maximum 5% Change per 200ms Tick"]
+    TARGET_AUTO --> SLEW_LIMIT
+    TARGET_MANUAL --> SLEW_LIMIT
+    TARGET_OFF --> SLEW_LIMIT
+    
+    SLEW_LIMIT --> WRITE_PWM["Write 25kHz Ultrasonic PWM to GPIO 27 MOSFET Gate"]
+    WRITE_PWM --> UPDATE_UI["vUITask: Refresh 0.96 inch OLED (AQI, Fan, Battery, Efficiency) at 2Hz"]
+    
+    UPDATE_UI --> TELEMETRY_DISPATCH["vTelemetryTask: Dispatch 17-Byte Packed Binary Telemetry Frame at 1Hz"]
+    TELEMETRY_DISPATCH --> NOTIFY_BLE["Broadcast via NimBLE Telemetry Characteristic to Companion App"]
+    TELEMETRY_DISPATCH --> FLASH_LOG["Append Record to LittleFS Circular Flash Storage CSV"]
+    
+    FLASH_LOG --> DELAY_CYCLE["Wait for Next Tick (200ms Control / 1000ms Telemetry)"]
+    DELAY_CYCLE --> SENSOR_LOOP
+```
 
 ---
 
-## 🪖 6. Helmet Physical Fitting & Ergonomic Arrangement
+## 🪖 6. Helmet Physical Fitting & Airflow Circulation
 
 <div align="center">
   <img src="assets/helmet_fitting_guide.jpg" alt="SMART AIR-SHIELD Physical Fitting on Helmet" width="100%" />
 </div>
 
-### 6.1 Placement & Engineering Justification
+### 6.1 Placement & Engineering Justification Table
 
 | Module Sub-Component | Recommended Position on Helmet | Engineering Justification |
 | :--- | :--- | :--- |
@@ -255,12 +285,53 @@ The ESP32 firmware separates sensing, closed-loop regulation, user feedback, and
 | **Outlet PM Sampling Point** | **Inside delivery nozzle, ahead of diffuser** | Provides clean, uncontaminated verification of delivered air particulate density. |
 | **Local Controller / Display** | **Side/rear enclosure or wireless phone app** | Zero obstruction of the rider's primary or peripheral field of view ($> 105^\circ$). |
 
-### 6.2 Airflow Circulation Dynamics Inside Helmet
-1. **Ambient Intake:** Roadside air enters the water-resistant intake grill at the module rear.
-2. **Multi-Stage Purification:** Coarse dust, $PM_{2.5}/PM_{10}$, and VOC odors are trapped across Pre-filter, HEPA H13, and Carbon stages.
-3. **Centrifugal Boosting:** The 5015 blower pressurizes air into the $10\text{ mm}$ flexible silicone delivery tube.
-4. **Breathing Zone Curtain:** Filtered air exits via the chin diffuser, forming a fresh positive-pressure zone around nose and mouth.
-5. **Continuous Exhaust:** Exhaled breath and stale air escape naturally through factory helmet chin vents and rear exhaust channels.
+---
+
+### 6.2 Aerodynamic Airflow Path & Filtration Flowchart
+
+```mermaid
+flowchart LR
+    subgraph External_Environment["External Roadway"]
+        POLLUTED_AIR["Ambient Roadside Air (PM2.5, PM10, Road Dust, Vehicle Exhaust)"]
+    end
+
+    subgraph Inlet_Sensing["Ambient Sampling Point"]
+        INLET_PORT["Water-Resistant Angled Rear Louver Inlet"]
+        INLET_PM["Inlet PMS7003 Laser Sensor (Baseline Ambient Concentration)"]
+    end
+
+    subgraph Filtration_Bay["3-Stage Filter Cartridge Cavity"]
+        STAGE1["Stage 1: 40-Mesh Washable Pre-Filter (Traps Dust, Debris, Hair > 50 um)"]
+        STAGE2["Stage 2: True HEPA H13 Media (Traps 95%+ of PM2.5, PM10, Smoke, Pathogens)"]
+        STAGE3["Stage 3: Honeycomb Activated Carbon (Adsorbs VOCs, Fuel Vapors, Odors)"]
+    end
+
+    subgraph Air_Propulsion["Pressurization & Ducting"]
+        BLOWER["5015 Brushless Centrifugal Blower (25kHz Ultrasonic PWM Drive)"]
+        DUCT["10mm Flexible Medical-Grade Silicone Air Tube"]
+    end
+
+    subgraph Breathing_Zone["Visor & Breathing Zone Delivery"]
+        OUTLET_PM["Outlet PMS7003 Laser Sensor (Empirical Clean Air Proof)"]
+        DIFFUSER["Curved Aerodynamic Air Knife Diffuser (Contoured Chin Mount)"]
+        CLEAN_AIR["Delivered Positive-Pressure Clean Air Curtain (Prevents Visor Fogging)"]
+        RIDER_FACE["Rider Nose and Mouth Breathing Zone (Protected from Road Exposure)"]
+        HELMET_VENTS["Helmet Exhaust Channels & Neck Clearance (Stale Exhaled Air Escape)"]
+    end
+
+    POLLUTED_AIR --> INLET_PORT
+    INLET_PORT --> INLET_PM
+    INLET_PORT --> STAGE1
+    STAGE1 --> STAGE2
+    STAGE2 --> STAGE3
+    STAGE3 --> BLOWER
+    BLOWER --> DUCT
+    DUCT --> OUTLET_PM
+    OUTLET_PM --> DIFFUSER
+    DIFFUSER --> CLEAN_AIR
+    CLEAN_AIR --> RIDER_FACE
+    RIDER_FACE --> HELMET_VENTS
+```
 
 ---
 
