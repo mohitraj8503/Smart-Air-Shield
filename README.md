@@ -623,3 +623,7 @@ Open [http://localhost:3000](http://localhost:3000) in **Google Chrome** or **Mi
 This project is open-source under the [MIT License](LICENSE).
 
 Developed by the Student Innovation Team at **Arka Jain University (AJU)** for the **Vishwakarma Awards 2026–27**, mentored via the **IIT Hyderabad Track**.
+
+---
+
+Built by [Mohit Raj](https://github.com/mohitraj8503) — Technical Team Lead @ [Tech Tomorrow](https://techtomorrow.in)
